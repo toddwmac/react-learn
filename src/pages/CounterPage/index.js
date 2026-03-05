@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import './styles.js';
 
-// Counter page component
-function CounterPage() {
+export default function CounterPage() {
   const [count, setCount] = useState(0);
 
-  function handleClick() {
+  function handleAdd() {
     setCount(count + 1);
+  }
+
+  function handleSubtract() {
+    setCount(count - 1);
   }
 
   return (
@@ -16,8 +18,12 @@ function CounterPage() {
 
       <p>Click count: {count}</p>
 
-      <button onClick={handleClick}>
-        Add 1
+      <button onClick={handleAdd}>
+        Increment
+      </button>
+
+      <button onClick={handleSubtract} style={{ marginLeft: '10px' }}>
+        Decrement
       </button>
 
       <div className="box">
@@ -31,26 +37,5 @@ function CounterPage() {
         </ul>
       </div>
     </div>
-  );
-}
-
-// Welcome page component
-function WelcomePage() {
-  return (
-    <div className="welcome-page">
-      <h1>Welcome to React!</h1>
-      <p>This is the default welcome page.</p>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/counter" element={<CounterPage />} />
-      </Routes>
-    </Router>
   );
 }

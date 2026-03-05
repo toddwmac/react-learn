@@ -21,3 +21,16 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# environment variables
+.env
+
+# IDE
+.vscode
+.idea
+
+# OS
+Thumbs.db
+
+# Claude Code (local settings)
+.claude
