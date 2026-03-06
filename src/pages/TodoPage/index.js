@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import Navigation from '../../components/Navigation';
 
 export default function TodoPage() {
   const [todos, setTodos] = useState([]);
@@ -8,12 +9,20 @@ export default function TodoPage() {
   useEffect(() => {
     const saved = localStorage.getItem('react-todos');
     if (saved) {
-      setTodos(JSON.parse(saved));
+      try {
+        setTodos(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse todos:', e);
+      }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('react-todos', JSON.stringify(todos));
+    try {
+      localStorage.setItem('react-todos', JSON.stringify(todos));
+    } catch (e) {
+      console.error('Failed to save todos:', e);
+    }
   }, [todos]);
 
   function addTodo() {
@@ -37,7 +46,7 @@ export default function TodoPage() {
     setTodos(todos.filter(todo => todo.id !== id));
   }
 
-  function handleKeyPress(e) {
+  function handleKeyDown(e) {
     if (e.key === 'Enter') {
       addTodo();
     }
@@ -53,21 +62,25 @@ export default function TodoPage() {
   const completedCount = todos.filter(t => t.completed).length;
 
   return (
-    <div className="max-w-2xl mx-auto p-8 font-sans">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Todo List</h1>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="max-w-2xl mx-auto p-8 font-sans">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Todo List</h1>
 
       <div className="flex gap-3 mb-6">
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="Add a new todo..."
           className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-800"
+          aria-label="New todo input"
         />
         <button
           onClick={addTodo}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          aria-label="Add todo"
         >
           Add
         </button>
@@ -77,18 +90,21 @@ export default function TodoPage() {
         <button
           onClick={() => setFilter('all')}
           className={filter === 'all' ? "bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" : "bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors"}
+          aria-label={`Show all todos (${todos.length})`}
         >
           All ({todos.length})
         </button>
         <button
           onClick={() => setFilter('active')}
           className={filter === 'active' ? "bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" : "bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors"}
+          aria-label={`Show active todos (${activeCount})`}
         >
           Active ({activeCount})
         </button>
         <button
           onClick={() => setFilter('completed')}
           className={filter === 'completed' ? "bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" : "bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors"}
+          aria-label={`Show completed todos (${completedCount})`}
         >
           Completed ({completedCount})
         </button>
@@ -108,6 +124,7 @@ export default function TodoPage() {
                 checked={todo.completed}
                 onChange={() => toggleTodo(todo.id)}
                 className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 cursor-pointer"
+                aria-label={`Mark todo as ${todo.completed ? 'incomplete' : 'complete'}: ${todo.text}`}
               />
               <span className={"flex-1 text-lg " + (todo.completed ? "line-through text-gray-400" : "text-gray-800")}>
                 {todo.text}
@@ -115,6 +132,7 @@ export default function TodoPage() {
               <button
                 onClick={() => deleteTodo(todo.id)}
                 className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                aria-label={`Delete todo: ${todo.text}`}
               >
                 Delete
               </button>
@@ -122,6 +140,7 @@ export default function TodoPage() {
           ))}
         </ul>
       )}
+      </div>
     </div>
   );
 }
