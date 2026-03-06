@@ -23,6 +23,12 @@ export default function Navigation() {
           >
             Todos
           </Link>
+          <Link 
+            to="/github-users" 
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+          >
+            GitHub Users
+          </Link>
         </div>
       </div>
     </nav>
